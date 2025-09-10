@@ -1,0 +1,39 @@
+Option Explicit
+
+Sub Generate_Report(Module1 As String)
+Dim status1 As Boolean
+
+Dim strfilepath As String, fileExist As String
+strfilepath = "\\192.1.52.1\j2ds\Design\Design Users\MANEESH\temp\log.txt"
+
+fileExist = Dir(strfilepath)
+
+If fileExist <> "" Then
+status1 = write_existing_file(strfilepath, Module1)
+Else
+create_txt_file (strfilepath)
+status1 = write_existing_file(strfilepath, Module1)
+End If
+
+End Sub
+
+Sub create_txt_file(strPath As String)
+
+Dim fso As Object
+Set fso = CreateObject("Scripting.FileSystemObject")
+Dim file1 As Object
+Set file1 = fso.CreateTextFile(strPath)
+
+End Sub
+Function write_existing_file(srtpath As String, content As String)
+
+Dim date1 As Date
+date1 = Now()
+
+Open srtpath For Append As #1
+content = content & "               -              " & date1
+Write #1, content
+Close #1
+
+End Function
+

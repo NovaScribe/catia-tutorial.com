@@ -1,0 +1,83 @@
+Sub CATMain()
+    Dim partDocument1 As PartDocument
+    Set partDocument1 = CATIA.ActiveDocument
+
+    Dim part1 As Part
+    Set part1 = partDocument1.Part
+
+    Dim bodies1 As Bodies
+    Set bodies1 = part1.Bodies
+
+    Dim body1 As Body
+    Set body1 = bodies1.Item("PartBody")
+
+    Dim sel
+    Set sel = CATIA.ActiveDocument.Selection
+
+    ' Create sketch
+    Dim sketches1 As Sketches
+    Set sketches1 = body1.Sketches
+
+    Dim reference1 As Reference
+    Set reference1 = sel.Item(1).Value
+
+    Dim sketch1 As Sketch
+    Set sketch1 = sketches1.Add(reference1)
+
+    sketch1.InverseOrientation
+
+    Dim arrayOfVariantOfDouble1(8)
+    arrayOfVariantOfDouble1(0) = 0#
+    arrayOfVariantOfDouble1(1) = 0#
+    arrayOfVariantOfDouble1(2) = 215#
+    arrayOfVariantOfDouble1(3) = 1#
+    arrayOfVariantOfDouble1(4) = 0#
+    arrayOfVariantOfDouble1(5) = 0#
+    arrayOfVariantOfDouble1(6) = 0#
+    arrayOfVariantOfDouble1(7) = 1#
+    arrayOfVariantOfDouble1(8) = 0#
+
+    Set sketch1Variant = sketch1
+    sketch1Variant.SetAbsoluteAxisData arrayOfVariantOfDouble1
+
+    part1.InWorkObject = sketch1
+
+    Dim factory2D1 As Factory2D
+    Set factory2D1 = sketch1.OpenEdition()
+
+    Dim geometricElements2 As GeometricElements
+    Set geometricElements2 = factory2D1.CreateProjections(reference1)
+
+    sketch1.CloseEdition
+    part1.InWorkObject = body1
+    part1.Update
+
+    ' Create pad
+    part1.InWorkObject = body1
+
+    Dim shapeFactory1 As ShapeFactory
+    Set shapeFactory1 = part1.ShapeFactory
+
+    Dim pad1 As Pad
+    Set pad1 = shapeFactory1.AddNewPad(sketch1, 120#)
+
+    Dim limit1 As Limit
+    Set limit1 = pad1.FirstLimit
+    limit1.LimitMode = catUpToPlaneLimit
+
+    Dim body2 As Body
+    Set body2 = bodies1.Item("Body.3")
+
+    Dim shapes2 As Shapes
+    Set shapes2 = body2.Shapes
+
+    Dim pad2 As Pad
+    Set pad2 = shapes2.Item("Pad.1")
+
+    ' Up to face
+    Dim reference3 As Reference
+    Set reference3 = sel.Item(2).Value
+    limit1.LimitingElement = reference3
+
+    part1.Update
+End Sub
