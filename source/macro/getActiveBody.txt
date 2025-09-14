@@ -1,8 +1,0 @@
-do
-	
-	if TypeName(part1.inWorkObject) = "Body" then
-		exit do
-	Else
-		set part1.inworkObject.Parent
-	end if
-loop

@@ -1,9 +1,0 @@
-On Error Resume Next
-    activePart.Product.Update
-    
-    If Err.Number > 0 Then
-    MsgBox "Error in Part Body"
-    Set activePart = Nothing
-    Set activeDoc = Nothing
-    End
-    End If
